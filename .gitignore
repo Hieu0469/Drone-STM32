@@ -1,0 +1,19 @@
+# Bỏ qua các thư mục build sinh ra file nhị phân
+Debug/
+Release/
+build/
+
+# Bỏ qua các file biên dịch và logs
+*.o
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+*.su
+*.log
+*.bak
+
+# Bỏ qua các file rác của hệ điều hành
+.DS_Store
+Thumbs.db
