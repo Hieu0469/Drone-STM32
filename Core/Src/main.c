@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "MPU.h"
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,6 +54,8 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 uint8_t rx_data;           // Biến chứa 1 ký tự nhận được từ Bluetooth
 uint8_t is_armed = 0;      // 0 = Khóa động cơ (1000us), 1 = Mở động cơ (Cho phép quay)
 uint32_t last_bt_time = 0; // Lưu thời gian nhận tín hiệu cuối cùng (chống mất sóng)
+// Thêm biến này để chứa dữ liệu MPU6050
+MPU6050_Raw mpu_data;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -115,12 +118,23 @@ int main(void)
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
 
     HAL_UART_Receive_IT(&huart1, &rx_data, 1);
+
+    // 2. Kích hoạt cảm biến MPU6050 (SAFE FROM CUBEMX HERE!)
+      MPU6050_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  // 1. Read the raw data from the sensor into your container
+	        MPU6050_Read_Data(&mpu_data);
+
+	        // 2. Process that raw data into usable angles (Roll/Pitch)
+	        MPU6050_Process_Angle(&mpu_data);
+
+	        // 3. Print the RAW integer data to the IDE console
+	        printf("Raw X: %d | Raw Y: %d | Raw Z: %d\r\n", mpu_data.Accel_X_RAW, mpu_data.Accel_Y_RAW, mpu_data.Accel_Z_RAW);
 	      // --- LOGIC ĐIỀU KHIỂN ĐỘNG CƠ ---
 	  if(is_armed == 1)
 	  {
@@ -422,6 +436,12 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+int _write(int file, char *ptr, int len) {
+    for (int i = 0; i < len; i++) {
+        ITM_SendChar((*ptr++));
+    }
+    return len;
+}
 // Hàm này tự động chạy mỗi khi điện thoại gửi 1 ký tự qua Bluetooth
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {

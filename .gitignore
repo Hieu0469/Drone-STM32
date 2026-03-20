@@ -13,6 +13,7 @@ build/
 *.su
 *.log
 *.bak
+.settings/
 
 # Bỏ qua các file rác của hệ điều hành
 .DS_Store

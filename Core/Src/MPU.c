@@ -99,7 +99,7 @@ void MPU6050_Init(void)
     else
     {
         sprintf(msg, "MPU6050 not found!\r\n");
-        CDC_Transmit_FS((uint8_t*)msg, strlen(msg));
+        //CDC_Transmit_FS((uint8_t*)msg, strlen(msg));
         HAL_Delay(500);
     }
 }
@@ -131,7 +131,7 @@ void MPU6050_Read_Data(MPU6050_Raw *Raw){
 		// XA_ST=0,YA_ST=0,ZA_ST=0, FS_SEL=0 -> � 16g ~  0001 1000  ~ 0x18 2048 		 * ****/
 	Raw->Ax = Raw->Accel_X_RAW/8192.0; //16384.0;
 	Raw->Ay = Raw->Accel_Y_RAW/8192.0;
-	Raw->Az = Raw->Accel_Z_RAW/8192.0;
+	Raw->Az = -(Raw->Accel_Z_RAW/8192.0);
 
     /*** convert the RAW values into dps (�/s)
          we have to divide according to the Full scale value set in FS_SEL
