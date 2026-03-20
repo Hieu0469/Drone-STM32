@@ -449,11 +449,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
   {
     last_bt_time = HAL_GetTick(); // Cập nhật thời điểm có sóng
 
-    if(rx_data == 'a') // Nhận chữ A (Arm)
+    if(rx_data == 'A') // Nhận chữ A (Arm)
     {
       is_armed = 1;
     }
-    else if(rx_data == 'd') // Nhận chữ D (Disarm)
+    else if(rx_data == 'D') // Nhận chữ D (Disarm)
     {
       is_armed = 0;
     }
